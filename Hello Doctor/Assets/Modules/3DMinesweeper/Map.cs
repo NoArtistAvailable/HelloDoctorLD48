@@ -44,4 +44,11 @@ public class Map
             grid[x, y, z] += 1;
         }
     }
+
+    public bool IsValidPosition(int3 pos)
+    {
+        return pos.x >= 0 && pos.x < Width
+            && pos.y >= 0 && pos.y < Height
+            && pos.z >= 0 && pos.z < Depth;
+    }
 }
