@@ -1,4 +1,6 @@
-Hello doctor, I am in pain
+Titles:
+	Hello doctor, I am in pain
+	Pick Your Brain
 
 Game about patients visiting a psychologist.
 
@@ -9,6 +11,9 @@ Game about patients visiting a psychologist.
 	-curses
 	-stress/relaxation
 	-trust/distrust
+	-cards could solve a lot of cells
+	-> patients could regrow cells
+	-cards that shoot precision lasers to solve
 
   - game ends when you run out of probes, stress or trust meter
 

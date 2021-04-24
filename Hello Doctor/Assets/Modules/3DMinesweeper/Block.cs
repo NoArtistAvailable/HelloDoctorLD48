@@ -28,11 +28,14 @@ public class Block : MonoBehaviour
 
     private void OnMouseDown()
     {
+        OnBlockClicked.Invoke(this);
+        if (value != 0) Debug.LogWarning("We clicked on a " + value, this);
+    }
+
+    public void Reveal()
+    {
         if (revealed) SetInvisible();
         CheckNeighbours();
-        OnBlockClicked.Invoke(this);
-        //Destroy(gameObject);
-        //ChangeColor();
     }
 
     public void ChangeColor()
@@ -56,14 +59,14 @@ public class Block : MonoBehaviour
 
     public void GetNeighbourData()
     {
-        CheckNeighboursAxis(Axis.Z);
-        CheckNeighboursAxis(Axis.Y);
-        CheckNeighboursAxis(Axis.X);
+        GetNeighbourData(Axis.Z);
+        GetNeighbourData(Axis.Y);
+        GetNeighbourData(Axis.X);
     }
 
     public void CheckNeighbours()
     {
-        Debug.Log(position + " im doing it.", this);
+        //Debug.Log(position + " im doing it.", this);
         
         foreach (var mf in Zs)
             mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.z);
@@ -78,7 +81,7 @@ public class Block : MonoBehaviour
         OnBlockRevealed.Invoke(this);
     }
 
-    private void CheckNeighboursAxis(Axis axis)
+    private void GetNeighbourData(Axis axis)
     {
         switch (axis)
         {
