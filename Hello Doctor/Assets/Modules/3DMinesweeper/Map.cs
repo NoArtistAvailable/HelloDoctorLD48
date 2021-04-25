@@ -10,9 +10,7 @@ public class Map
     public int Width, Height, Depth;
     public int[,,] grid;
 
-    public uint seed;
-
-    public Map(int width, int height, int depth, float minesPercent, float bonusPercent, uint _seed = 0)
+    public Map(int width, int height, int depth, float minesPercent, float bonusPercent, ref Random rand)
     {
         Width = width;
         Height = height;
@@ -20,10 +18,6 @@ public class Map
 
         grid = new int[Width, Height, Depth];
         int totalCount = Width * Height * Depth;
-
-        seed = _seed;
-        if (seed == 0) seed = (uint) (UnityEngine.Random.Range(int.MinValue, int.MaxValue) + int.MaxValue);
-        Random rand = new Random(seed);
 
         int mines = Mathf.FloorToInt(totalCount * minesPercent);
         int boni = Mathf.FloorToInt(totalCount * bonusPercent);

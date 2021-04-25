@@ -11,6 +11,7 @@ public class MapGenerator : MonoBehaviour
 
     public Map map;
     public Block[,,] blocks;
+    public List<Block> blockList = new List<Block>();
     public Vector3 completeSize = Vector3.one;
     public int3 dimensions;
     [Range(0f, 1f)]
@@ -39,8 +40,8 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < toReveal; i++)
         {
             var b = blocks[random.NextInt(map.Width), random.NextInt(map.Height), random.NextInt(map.Depth)];
-            if (b.value == 0) b.CheckNeighbours();
-            else b.ShowColor();
+            if (b.value == 0) b.Reveal();
+            else { b.ShowColor(); b.revealed = true; }
         }
     }
 
@@ -49,7 +50,10 @@ public class MapGenerator : MonoBehaviour
     {
         blockSize = new float3(completeSize.x / (float)dimensions.x, completeSize.y / (float)dimensions.y, completeSize.z / (float)dimensions.z);
 
-        map = new Map(dimensions.x, dimensions.y, dimensions.z, minesPercent, boniPercent, seed);
+        //Debug.Log("Random State before level Gen: " + random.state);
+        map = new Map(dimensions.x, dimensions.y, dimensions.z, minesPercent, boniPercent, ref random);
+        blockList = new List<Block>();
+        //Debug.Log("Random State after level Gen: " + random.state);
         blocks = new Block[map.Width, map.Height, map.Depth];
         Vector3 positionOffset = (new Vector3(map.Width * blockSize.x, map.Height * blockSize.y, map.Depth * blockSize.z) - (Vector3)blockSize) * -0.5f;
         for (int x = 0; x < map.Width; x++)
@@ -76,6 +80,7 @@ public class MapGenerator : MonoBehaviour
                     //}
 
                     blocks[x, y, z] = block;
+                    blockList.Add(block);
                 }
     }
 

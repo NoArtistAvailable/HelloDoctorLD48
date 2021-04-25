@@ -28,6 +28,7 @@ public class LookAtCamController : MonoBehaviour
 
     public static void Unregister(LookAtCamAngles angles)
     {
+        if (!Instance) return;
         Instance.toUpdate.Remove(angles);
     }
 }

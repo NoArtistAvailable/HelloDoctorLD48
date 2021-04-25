@@ -16,17 +16,24 @@ MonoBehaviour:
   - Hello Doctor!
   issuesGotPressed:
   - This is hard to talk about...
-  - I dont know what to say about it...
+  - I dont know what to say...
   - Please... another time...
   - ...
   memoryGood:
   - I remember how the farm smelled.
   - I loved seeing them laugh.
+  - It is one of the most beautiful places in this world.
   memoryBad:
   - The moment our eyes met, I knew I was in danger.
   - I couldn't hold them back, they would just continue.
-  highStress: []
-  lowStress: []
+  - 'We never saw each other again after that. '
+  - I stayed in the hospital for almost a month.
+  highStress:
+  - Can we take a break?
+  lowStress:
+  - It's good to talk.
+  - I feel like I can talk to you and you really listen.
   highTrust: []
   lowTrust: []
   gameOver: []
+  win: []

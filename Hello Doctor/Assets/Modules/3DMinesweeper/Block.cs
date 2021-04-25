@@ -24,6 +24,7 @@ public class Block : MonoBehaviour
     public MeshLookup lookup;
     public bool revealed;
     public bool isVisible = true;
+    public bool flagged = false;
 
     //[System.NonSerialized]
     public int specialNeighbours;
@@ -41,7 +42,7 @@ public class Block : MonoBehaviour
 
     public void Reveal()
     {
-        Debug.Log("RevealState: " + revealed, this);
+        //Debug.Log("RevealState: " + revealed, this);
         if (value == 0)
         {
             //if (revealed) 
@@ -118,6 +119,7 @@ public class Block : MonoBehaviour
     {
         var oldValue = value;
         value += delta;
+        value = Mathf.Clamp(value, -1, 1);
         MapGenerator.Instance.map.grid[position.x, position.y, position.z] = value;
         GetNeighbourData();
         if((oldValue == 0 && value != 0) || (oldValue != 0 && value == 0))
@@ -133,6 +135,40 @@ public class Block : MonoBehaviour
             if (value != 0 && !GetComponent<Renderer>().enabled) SetVisible();
             ShowColor();
         }
+    }
+
+    public void SetValue(int val)
+    {
+        var oldValue = value;
+        value = val;
+        MapGenerator.Instance.map.grid[position.x, position.y, position.z] = value;
+        GetNeighbourData();
+        if (oldValue != 0 )
+        {
+            MapGenerator.Instance.DoForeachNeighbour(position, (neighbour) => {
+                neighbour.GetNeighbourData();
+                if (neighbour.revealed) neighbour.RefreshNumberMeshes();
+            });
+        }
+        Reveal();
+    }
+
+    public void SetValueOnSelfAndNeighbours(int val)
+    {
+        SetValue(val);
+        MapGenerator.Instance.DoForeachNeighbour(position, (neigh)=>neigh.SetValue(val));
+    }
+
+    public void SetValueAndPropagateToSame(int val)
+    {
+        if (val == value) return;
+        int oldValue = value;
+        SetValue(val);
+        MapGenerator.Instance.DoForeachNeighbour(position, (neigh) =>
+        {
+            //Debug.Log("NValue: " + neigh.value + " checkValue: " + oldValue);
+            if (neigh.value == oldValue) neigh.SetValueAndPropagateToSame(val);
+        });
     }
 
     public void PropagateValueToNeighbours(int delta, float chance = 1f)
@@ -162,6 +198,7 @@ public class Block : MonoBehaviour
         //Debug.Log(position + " im doing it.", this);
         RefreshNumberMeshes();
         revealed = true;
+        SetInvisible();
         if (specialNeighbours.Equals(int3.zero)) SetInvisible();
         OnBlockRevealed.Invoke(this);
     }
