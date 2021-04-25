@@ -46,10 +46,10 @@ public class DialogueCharacter : ScriptableObject
         }
     }
 
-    public void Show(Dialogue type)
+    public void Show(Dialogue type, System.Action doAfter = null)
     {
         string message = Get(type);
-        TextboxManager.ShowText(message);
+        TextboxManager.ShowText(message, doAfter);
     }
 
 }

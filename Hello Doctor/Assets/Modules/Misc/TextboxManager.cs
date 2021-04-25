@@ -66,9 +66,10 @@ public class TextboxManager : MonoBehaviour
         ShowText(sampleText);
     }
 
-    public static void ShowText(string message)
+    public static void ShowText(string message, System.Action doAfter=null)
     {
-        Instance.typeRoutine = Instance.StartCoroutine(Instance.TypeText(message, null));
+        if (Instance.typeRoutine != null) Instance.StopCoroutine(Instance.typeRoutine);
+        Instance.typeRoutine = Instance.StartCoroutine(Instance.TypeText(message, doAfter));
     }
 
     IEnumerator TypeText(string message, Action action)
@@ -91,7 +92,11 @@ public class TextboxManager : MonoBehaviour
         }
         text.text = message;
         abortClick = false;
+        if (action != null) {
+            while (!abortClick) yield return null;
+            action.Invoke();
+            textBox.gameObject.SetActive(false);
+        }
         typeRoutine = null;
-        if (action != null) action.Invoke();
     }
 }

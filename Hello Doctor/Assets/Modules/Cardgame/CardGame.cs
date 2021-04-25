@@ -55,6 +55,7 @@ public class CardGame : MonoBehaviour
             {
                 int result = Mathf.CeilToInt((float)(Instance.stress - before) / (float)Instance.stressBreakAt);
                 MineSweeperGame.MinePropagation(result);
+                MineSweeperGame.Instance.character.Show(DialogueCharacter.Dialogue.MemoryBad);
             }
         }
     }

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   greetings:
   - Hello Doctor!
+  - I've been looking forward to our session the entire week.
+  - It's good to see you. My week has been terrible.
   issuesGotPressed:
   - This is hard to talk about...
   - I dont know what to say...
@@ -22,7 +24,6 @@ MonoBehaviour:
   memoryGood:
   - I remember how the farm smelled.
   - I loved seeing them laugh.
-  - It is one of the most beautiful places in this world.
   memoryBad:
   - The moment our eyes met, I knew I was in danger.
   - I couldn't hold them back, they would just continue.
@@ -35,5 +36,8 @@ MonoBehaviour:
   - I feel like I can talk to you and you really listen.
   highTrust: []
   lowTrust: []
-  gameOver: []
-  win: []
+  gameOver:
+  - I'm sorry, I really have to go. There's so much I have to take care of, I don't
+    think I can actually spare the time to visit again.
+  win:
+  - Thank you so much, I haven't felt this relieved in forever!

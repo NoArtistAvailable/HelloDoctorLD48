@@ -25,10 +25,13 @@ public class MineSweeperGame : MonoBehaviour
     public enum State { Reveal, Flag, Lookup, Dissolve}
     public State state;
 
+    bool gameEnded = false;
+
     public Button buttonReveal, buttonNote, buttonObserve, buttonDiscuss;
     public int observeCooldown = 3, discussCooldown = 6;
     int currentObserveCooldown, currentDiscussCooldown;
 
+    public StatisticsScreen endOfGameStats;
 
     [Header("Character")]
     public DialogueCharacter character;
@@ -78,6 +81,7 @@ public class MineSweeperGame : MonoBehaviour
 
     void HandleBlockClick(Block block)
     {
+        if (gameEnded) return;
         switch (state)
         {
             case State.Reveal:
@@ -94,7 +98,13 @@ public class MineSweeperGame : MonoBehaviour
 
                 if (block.value < 0) {
                     CardGame.MineClick();
-                    character.Show(DialogueCharacter.Dialogue.IssuePressed);
+                    if (!CheckIfGameLost())
+                        character.Show(DialogueCharacter.Dialogue.IssuePressed);
+                    else
+                    {
+                        character.Show(DialogueCharacter.Dialogue.GameOver, () => { endOfGameStats.gameObject.SetActive(true); });
+                        gameEnded = true;
+                    }
                 }
                 break;
             case State.Lookup:
@@ -137,12 +147,26 @@ public class MineSweeperGame : MonoBehaviour
                 break;
         }
 
-        CheckIfGameEnded();
+        if (CheckIfGameWon())
+        {
+            character.Show(DialogueCharacter.Dialogue.Win, ()=> { endOfGameStats.gameObject.SetActive(true); });
+            gameEnded = true;
+        }
     }
 
-    private void CheckIfGameEnded()
+    private bool CheckIfGameWon()
     {
         var neutralThemes = MapGenerator.Instance.blockList.FindAll(x => !x.revealed && x.value == 0);
         Debug.Log("Game Ending? " + neutralThemes.Count + " left.");
+        return neutralThemes.Count == 0;
+    }
+
+    bool CheckIfGameLost()
+    {
+        var mines = MapGenerator.Instance.blockList.FindAll(x => x.value < 0);
+        Debug.Log("Game Ending? " + mines.Count + " mines.");
+        return mines.Count 
+            > 
+            MapGenerator.Instance.map.Width * MapGenerator.Instance.map.Height * MapGenerator.Instance.map.Depth * 0.5f;
     }
 }

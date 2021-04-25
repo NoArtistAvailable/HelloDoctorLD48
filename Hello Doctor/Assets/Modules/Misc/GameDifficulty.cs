@@ -15,4 +15,9 @@ public class GameDifficulty : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    public void SetSettings(DiffcultySetting setting)
+    {
+        this.setting = setting;
+    }
 }

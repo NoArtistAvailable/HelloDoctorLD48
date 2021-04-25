@@ -32,6 +32,15 @@ public class MapGenerator : MonoBehaviour
 
     private void Start()
     {
+        if (GameDifficulty.Instance != null)
+        {
+            var sett = GameDifficulty.Instance.setting;
+            dimensions = sett.mapSize;
+            minesPercent = sett.minesPercent;
+            boniPercent = sett.bonusPercent;
+            revealRandomAtStart = sett.alreadySolvedPercent;
+        }
+
         if (seed == 0) seed = (uint)(UnityEngine.Random.Range(int.MinValue, int.MaxValue) + int.MaxValue);
         random = new Unity.Mathematics.Random(seed);
         Generate();

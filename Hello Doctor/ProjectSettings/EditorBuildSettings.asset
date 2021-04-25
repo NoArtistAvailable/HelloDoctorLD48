@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Samples/elZach GamejamTools/0.0.1/Title Menu/Title.unity
+    path: Assets/Scenes/Title.unity
     guid: ea8e5f244a7fad3419d8514c67c3c7c3
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
