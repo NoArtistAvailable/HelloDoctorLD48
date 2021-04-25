@@ -29,6 +29,11 @@ public class MineSweeperGame : MonoBehaviour
     public AudioSource blockAudio;
     public AudioContainer revealAudio;
 
+    [Header("Colors")]
+    public Color colorRegular = Color.white;
+    public Color colorMine = Color.red;
+    public Color colorBonus = Color.blue;
+
     private void OnEnable()
     {
         Block.OnBlockClicked.AddListener(HandleBlockClick);

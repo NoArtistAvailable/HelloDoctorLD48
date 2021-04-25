@@ -22,6 +22,7 @@ public class Block : MonoBehaviour
 
     public MeshLookup lookup;
     public bool revealed;
+    public bool isVisible = true;
 
     //[System.NonSerialized]
     public int3 specialNeighbours;
@@ -32,29 +33,113 @@ public class Block : MonoBehaviour
         if (value != 0) Debug.LogWarning("We clicked on a " + value, this);
     }
 
+    //private void Start()
+    //{
+    //    ShowColor();
+    //}
+
     public void Reveal()
     {
-        if (revealed) SetInvisible();
-        CheckNeighbours();
+        Debug.Log("RevealState: " + revealed, this);
+        if (value == 0)
+        {
+            if (revealed) SetInvisible();
+            CheckNeighbours();
+        }
+        else if( value != 0)
+        {
+            ShowColor();
+            if (revealed) PropagateValueToNeighbours(-1, 0.5f);
+            revealed = true;
+        }
     }
 
-    public void ChangeColor()
+    public void ShowColor()
     {
+        Color col = Vector4.zero;
+        if (value == 0) col = MineSweeperGame.Instance.colorRegular;
+        else if (value < 0) col = MineSweeperGame.Instance.colorMine;
+        else if (value > 0) col = MineSweeperGame.Instance.colorBonus;
+
         var rend = GetComponent<Renderer>();
-        var block = new MaterialPropertyBlock();
-        rend.GetPropertyBlock(block);
-        block.SetColor("_Color", Random.ColorHSV());
-        rend.SetPropertyBlock(block);
+        var matBlock = new MaterialPropertyBlock();
+        rend.GetPropertyBlock(matBlock);
+        matBlock.SetColor("_Color", col);
+        rend.SetPropertyBlock(matBlock);
     }
 
     public void SetInvisible()
     {
+        isVisible = false;
         var collider = GetComponent<Collider>();
         collider.enabled = false;
         var rend = GetComponent<Renderer>();
         rend.enabled = false;
+        NumberVisibility();
+        MapGenerator.Instance.DoForeachNeighbour(position, (neighbour) =>
+        {
+            neighbour.NumberVisibility();
+        });
+    }
+
+    public void NumberVisibility()
+    {
+        bool vis = HasVisibleNeighbours();
         for (int i = 0; i < transform.childCount; i++)
-            transform.GetChild(i).gameObject.SetActive(false);
+            transform.GetChild(i).gameObject.SetActive(vis);
+    }
+
+    public bool HasVisibleNeighbours()
+    {
+        bool visible = false;
+        MapGenerator.Instance.DoForeachNeighbour(position, (neighbour) =>
+        {
+            visible |= neighbour.isVisible;
+        });
+        return visible;
+    }
+
+    public void SetVisible()
+    {
+        isVisible = true;
+        var collider = GetComponent<Collider>();
+        collider.enabled = true;
+        var rend = GetComponent<Renderer>();
+        rend.enabled = true;
+        for (int i = 0; i < transform.childCount; i++)
+            transform.GetChild(i).gameObject.SetActive(true);
+        GetNeighbourData();
+        RefreshNumberMeshes();
+    }
+
+    public void ChangeValue(int delta)
+    {
+        var oldValue = value;
+        value += delta;
+        MapGenerator.Instance.map.grid[position.x, position.y, position.z] = value;
+        GetNeighbourData();
+        if((oldValue == 0 && value != 0) || (oldValue != 0 && value == 0))
+        {
+            MapGenerator.Instance.DoForeachNeighbour(position, (neighbour) => {
+                neighbour.GetNeighbourData();
+                if (neighbour.revealed) neighbour.RefreshNumberMeshes();
+            });
+        }
+        if (revealed)
+        {
+            CheckNeighbours();
+            if (value != 0 && !GetComponent<Renderer>().enabled) SetVisible();
+            ShowColor();
+        }
+    }
+
+    public void PropagateValueToNeighbours(int delta, float chance = 1f)
+    {
+        MapGenerator.Instance.DoForeachNeighbour(position, (neighbour) =>
+        {
+            if(MapGenerator.Instance.random.NextFloat() <= chance)
+                neighbour.ChangeValue(delta);
+        });
     }
 
     public void GetNeighbourData()
@@ -64,18 +149,22 @@ public class Block : MonoBehaviour
         GetNeighbourData(Axis.X);
     }
 
+    public void RefreshNumberMeshes()
+    {
+        foreach (var mf in Zs)
+            mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.z);
+
+        foreach (var mf in Ys)
+            mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.y);
+
+        foreach (var mf in Xs)
+            mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.x);
+    }
+
     public void CheckNeighbours()
     {
         //Debug.Log(position + " im doing it.", this);
-        
-        foreach (var mf in Zs)
-            mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.z);
-        
-        foreach (var mf in Ys)
-            mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.y);
-        
-        foreach (var mf in Xs)
-            mf.sharedMesh = lookup.GetNumberMesh(specialNeighbours.x);
+        RefreshNumberMeshes();
         revealed = true;
         if (specialNeighbours.Equals(int3.zero)) SetInvisible();
         OnBlockRevealed.Invoke(this);
