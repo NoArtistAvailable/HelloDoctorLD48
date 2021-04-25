@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "LD48/Character")]
 public class DialogueCharacter : ScriptableObject
 {
-    public enum Dialogue { Greeting, IssuePressed, MemoryGood, MemoryBad, HighStress, LowStress, HighTrust, LowTrust, GameOver}
+    public enum Dialogue { Greeting, IssuePressed, MemoryGood, MemoryBad, HighStress, LowStress, HighTrust, LowTrust, GameOver, Win}
 
     public string[] greetings;
     public string[] issuesGotPressed;
@@ -16,6 +16,7 @@ public class DialogueCharacter : ScriptableObject
     public string[] highTrust;
     public string[] lowTrust;
     public string[] gameOver;
+    public string[] win;
 
     public string Get(Dialogue type)
     {
@@ -39,6 +40,8 @@ public class DialogueCharacter : ScriptableObject
                 return lowTrust[Random.Range(0, lowTrust.Length)];
             case Dialogue.GameOver:
                 return gameOver[Random.Range(0, gameOver.Length)];
+            case Dialogue.Win:
+                return gameOver[Random.Range(0, win.Length)];
             default: return "..";
         }
     }
