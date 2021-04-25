@@ -25,7 +25,10 @@ public class MineSweeperGame : MonoBehaviour
     public enum State { Reveal, Flag, Lookup, Dissolve}
     public State state;
 
-    bool gameEnded = false;
+    [System.NonSerialized]
+    public bool gameEnded = false;
+    [System.NonSerialized]
+    public bool success = false;
 
     public Button buttonReveal, buttonNote, buttonObserve, buttonDiscuss;
     public int observeCooldown = 3, discussCooldown = 6;
@@ -149,8 +152,10 @@ public class MineSweeperGame : MonoBehaviour
 
         if (CheckIfGameWon())
         {
-            character.Show(DialogueCharacter.Dialogue.Win, ()=> { endOfGameStats.gameObject.SetActive(true); });
             gameEnded = true;
+            success = true;
+            character.Show(DialogueCharacter.Dialogue.Win, ()=> { endOfGameStats.gameObject.SetActive(true); });
+            
         }
     }
 

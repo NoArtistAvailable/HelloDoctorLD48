@@ -41,7 +41,7 @@ public class DialogueCharacter : ScriptableObject
             case Dialogue.GameOver:
                 return gameOver[Random.Range(0, gameOver.Length)];
             case Dialogue.Win:
-                return gameOver[Random.Range(0, win.Length)];
+                return win[Random.Range(0, win.Length)];
             default: return "..";
         }
     }

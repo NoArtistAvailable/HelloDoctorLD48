@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9c745e3c749bf742829d94f24bc30c6, type: 3}
-  m_Name: Diff_Stephan
+  m_Name: Sven
   m_EditorClassIdentifier: 
   mapSize:
-    x: 5
-    y: 5
-    z: 4
-  minesPercent: 0.1
+    x: 15
+    y: 15
+    z: 12
+  minesPercent: 0.13
   bonusPercent: 0.02
-  alreadySolvedPercent: 0.1
+  alreadySolvedPercent: 0.12
