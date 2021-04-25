@@ -82,7 +82,7 @@ public class MapGenerator : MonoBehaviour
     private void RevealNeighbours(Block block)
     {
         var position = block.position;
-        if (block.specialNeighbours.x != 0 || block.specialNeighbours.y != 0 || block.specialNeighbours.z != 0) return;
+        if (block.specialNeighbours != 0) return;
 
         DoForeachNeighbour(block.position, CheckNonRevealed);
         //for (int x = -1; x <= 1; x++)
@@ -115,10 +115,25 @@ public class MapGenerator : MonoBehaviour
             for (int y = -1; y <= 1; y++)
                 for (int z = -1; z <= 1; z++)
                 {
-                    if (Mathf.Abs(x) == Mathf.Abs(y) && Mathf.Abs(x) == Mathf.Abs(z)) continue;
+                    //if (Mathf.Abs(x) == Mathf.Abs(y) && Mathf.Abs(x) == Mathf.Abs(z)) continue;
+                    if (x == 0 && y == 0 && z == 0) continue;
                     int3 pos = new int3(x + position.x, y + position.y, z + position.z);
                     if (!map.IsValidPosition(pos)) continue;
                     actionOnBlock.Invoke(blocks[pos.x, pos.y, pos.z]);
+                }
+    }
+
+    public void DoForeachNeighbourData(int3 position, System.Func<int,int> funcOnData)
+    {
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+                for (int z = -1; z <= 1; z++)
+                {
+                    //if (Mathf.Abs(x) == Mathf.Abs(y) && Mathf.Abs(x) == Mathf.Abs(z)) continue;
+                    if (x == 0 && y == 0 && z == 0) continue;
+                    int3 pos = new int3(x + position.x, y + position.y, z + position.z);
+                    if (!map.IsValidPosition(pos)) continue;
+                    map.grid[pos.x,pos.y,pos.z] = funcOnData.Invoke(map.grid[pos.x, pos.y, pos.z]);
                 }
     }
 
